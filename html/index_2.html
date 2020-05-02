@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Said LOUNNAS</title>
+    <link href="chat.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css"
+      rel="stylesheet">
+    <link rel="stylesheet" href="../css//style_2.css">
+    
+</head>
+<body>
+	<header>
+            <div class="title-1">
+			<nav>
+               <img src="../picture/logo_tchat.png" alt="logo pricipal" />
+             
+                <span>Welcome to chat</span>
+                <div>
+                        <form class="form-signup">
+                                <button
+                                    id="bt_logout"
+                                    class="btn btn-navbar-primary bg-primary"
+                                    type="button">
+                                    Sign Out
+                                </button>
+                            </form>
+                </div>
+			</nav>
+        </div>
+        </header>
+        <body>
+            <div class="container">
+              <h3 class=" text-center">Messaging</h3>
+              <div style="display:none" id="msg" class="alert alert-danger col-sm-12"></div>
+              <div class="messaging">
+                <div class="inbox_msg">
+                  <div class="inbox_people">
+                    <div class="headind_srch">
+                      <div class="recent_heading">
+                        <h4>Online users</h4>
+                      </div>
+                      <div class="srch_bar" style="display: none;">
+                        <div class="stylish-input-group">
+                          <input type="text" class="search-bar" placeholder="Search">
+                          <span class="input-group-addon">
+                            <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                          </span> </div>
+                      </div>
+                    </div>
+                    <div class="inbox_chat">
+          
+                    </div>
+                  </div>
+                  <div class="mesgs">
+                    <div class="msg_history">
+          
+                    </div>
+                    <div class="type_msg">
+                      <div class="input_msg_write">
+                        <form id="chatform" class="form-horizontal" role="form">
+                          <input type="text" class="write_msg" placeholder="Type a message" />
+                          <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div id="chat_item" style="display: none;">
+              <div class="chat_list active_chat">
+                <div class="chat_people">
+                  <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                  <div class="chat_ib">
+                    <h5></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div id="chat_in" style="display: none;">
+              <div class="incoming_msg">
+                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png"> </div>
+                <div class="received_msg">
+                  <div class="received_withd_msg">
+                    <p>Test, which is a new approach to have</p>
+                    <span class="time_date"><span class="msg_user">Username</span> | <span
+                        class="msg_time">Yesterday</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div id="chat_out" style="display: none;">
+              <div class="outgoing_msg">
+                <div class="sent_msg">
+                  <p>Apollo University, Delhi, India Test</p>
+                  <span class="time_date">Today</span>
+                </div>
+              </div>
+            </div>
+    <script src="../main.js/jquery.js"></script>
+    <script type="text/javascript">
+        function render_users(token) {
+          $.ajax({
+            crossDomain: true,
+            dataType: 'jsonp',
+            headers: { host: "greenvelvet.alwaysdata.net" },
+            url: "http://greenvelvet.alwaysdata.net/kwick/api/user/logged/" + token,
+          })
+            .done(function (data) {
+              let status = data.result.status;
+              if (status == 'done') {
+                let users = data.result.user;
+                $(".inbox_chat").html("");
+      
+                users.forEach(user => {
+                  var element = $("#chat_item").clone();
+                  $(element).find(".chat_ib h5").html(user);
+                  $(".inbox_chat").append($(element).html());
+                });
+              } else {
+                let msg = data.result.message;
+                $("#msg").html(msg);
+                $("#msg").show();
+              }
+            })
+            .always(function () {
+      
+              setTimeout(function () {
+                render_users(token);
+              }, 5000);
+            });
+        }
+      
+        function render_messages(username, token, timestamp) {
+          $.ajax({
+            crossDomain: true,
+            dataType: 'jsonp',
+            headers: { host: "greenvelvet.alwaysdata.net" },
+            url: "http://greenvelvet.alwaysdata.net/kwick/api/talk/list/" + token + "/" + timestamp,
+          })
+            .done(function (data) {
+              let status = data.result.status;
+              if (status == 'done') {
+                let messages = data.result.talk;
+                messages.forEach(message => {
+      
+                  if (message.user_name == username) {
+                    // chat out
+                    var element = $("#chat_out").clone();
+                    $(element).find(".sent_msg p").html(message.content);
+                    $(element).find(".sent_msg .time_date").html(new Date(message.timestamp * 1000).toLocaleTimeString());
+                    $(".msg_history").append($(element).html());
+                  } else {
+                    // chat in
+                    var element = $("#chat_in").clone();
+                    $(element).find(".received_withd_msg p").html(message.content);
+                    $(element).find(".received_withd_msg .msg_user").html(message.user_name);
+                    $(element).find(".received_withd_msg .msg_time").html(new Date(message.timestamp * 1000).toLocaleTimeString());
+                    $(".msg_history").append($(element).html());
+                  }
+                });
+                $(".msg_history").animate({ scrollTop: $('.msg_history').prop("scrollHeight") }, 1000);
+      
+      
+              } else {
+                let msg = data.result.message;
+                $("#msg").html(msg);
+                $("#msg").show();
+              }
+            })
+            .always(function () {
+              setTimeout(function () {
+      
+                var now = Date.now();
+                timestamp = Math.floor(now / 1000);
+                render_messages(username, token, timestamp);
+      
+              }, 1000);
+            });
+        }
+      
+        $(document).ready(function () {
+          $('#chatform').submit(function (evt) {
+                  evt.preventDefault();
+              });
+      
+          var url = new URL(window.location.href);
+          var id = url.searchParams.get("id");
+          var username = url.searchParams.get("username");
+          var token = url.searchParams.get("token");
+      
+          if (token !== undefined) {
+      
+            render_users(token);
+      
+            var now = Date.now();
+            var timestamp = Math.floor((now - (60 * 60 * 1000)) / 1000);
+            render_messages(username, token, timestamp);
+      
+          } else {
+            location.replace("/signin.html");
+          }
+      
+          $(".msg_send_btn").click(function () {
+            let msg = $('.write_msg').val();
+            $.ajax({
+              crossDomain: true,
+              dataType: 'jsonp',
+              headers: { host: "greenvelvet.alwaysdata.net" },
+              url: "http://greenvelvet.alwaysdata.net/kwick/api/say/" + token + "/" + id + "/" + encodeURI(msg),
+            })
+              .done(function (data) {
+                let status = data.result.status;
+                if (status == 'done') {
+                  // todo: refresh
+                } else {
+                  let msg = data.result.message;
+                  $("#msg").html(msg);
+                  $("#msg").show();
+                }
+              });
+            $('.write_msg').val("");
+          });
+      
+          $("#bt_logout").click(function () {
+            $.ajax({
+              crossDomain: true,
+              dataType: 'jsonp',
+              headers: { host: "greenvelvet.alwaysdata.net" },
+              url: "http://greenvelvet.alwaysdata.net/kwick/api/logout/" + token + "/" + id,
+            })
+              .done(function (data) {
+                let status = data.result.status;
+                if (status == 'done') {
+                  location.replace("/signin.html");
+      
+      
+      
+                } else {
+                  let msg = data.result.message;
+                  $("#msg").html(msg);
+                  $("#msg").show();
+                }
+              });
+          });
+        });
+      </script>
+      
+<body>
+</html>

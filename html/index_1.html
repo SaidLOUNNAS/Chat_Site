@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Said LOUNNAS</title>
+    <link rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"/>
+            <link rel="stylesheet" href="../css/style_1.css">
+</head>
+<body>
+	<header>
+            <div class="title-1">
+			<nav>
+               <img src="../picture/logo_tchat.png" alt="logo pricipal" />
+             
+                <span>Welcome to chat</span>
+                <div>
+                        <form class="form-signup">
+                                <button id="return"
+                                    class="btn btn-outline-secondary"
+                                    type="button">
+                                   <a href="/index.html">Return</a>
+                                </button>
+                            </form>
+                </div>
+			</nav>
+        </div>
+        </header>
+        <div id="container">
+    <div class="square-ctnre-2">
+                <div class="title-2">Join Free Now</div>
+                <div id="green-square"></div>
+                <div class="groupe-info">
+                <form id="formId">
+                        <div   class="form-group">
+                            <label for="exampleInputUsername">User name</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user_name"
+                                aria-describedby="User_name"/>
+                        </div>
+                        
+                        <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"/>
+                        </div>
+                        <div class="form-group">
+                                <label for="exampleInputPassword2">Type your password again</label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password2"/>
+                        </div>
+        
+                        <div class="form-group form-check">
+                            <button id="bt_signup" type="button" class="btn btn-primary">
+                                Signup
+                            </button>
+                        </div>
+                    </form>
+                </div>
+    </div>
+</div>
+   
+    <script src="../main.js/jquery.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#signupform').submit(function (evt) {
+                evt.preventDefault();
+            });
+            $("#bt_signup").click(function () {
+                let username = $('#user_name').val();
+                let password = $('#password').val();
+                let password2 = $('#password2').val();
+                $.ajax({
+                    crossDomain: true,
+                    dataType: 'jsonp',
+                    headers: { host: "greenvelvet.alwaysdata.net" },
+                    url: "http://greenvelvet.alwaysdata.net/kwick/api/signup/" + username + "/" + password + "/" + password2,
+                })
+                    .done(function (data) {
+                        let status = data.result.status;
+                        if (status == 'done') {
+                            let id = data.result.id;
+                            let token = data.result.token;
+                            location.replace("/chat.html?id=" + id + "&username=" + username + "&token=" + token);
+                        } else {
+                            let msg = data.result.message;
+                            $("#signupalert span").html(msg);
+                            $("#signupalert").show();
+                        }
+                    });
+            });
+        });
+    </script>
+   
+</body>
+</html>

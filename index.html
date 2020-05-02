@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Said LOUNNAS</title>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+			crossorigin="anonymous"/>
+		<link rel="stylesheet" href="./css/style.css" />
+	</head>
+	<body>
+		<div id="container">
+		<header>
+			<nav>
+				<img src="./picture/logo_tchat.png" alt="logo pricipal" />
+				<div id="menu-header">Welcome to chat</div>
+				<div>
+					<form class="form-signup">Not a member?
+						<button type="submit" class="btn btn-outline-secondary">
+						<a href="./html/index_1.html">Signup</a>
+						</button>
+					</form>
+				</div>
+			</nav>
+		</header>
+		<div id="title">
+			<h1>Use your login to log in</h1>
+		</div>
+		<div id="main-section">
+			<form  id="formId" class="groupe-info">
+				<div class="form-group">
+					<label  for="username">User name</label>
+					<input
+						type="text"
+						class="form-control"
+						id="user_name"
+						aria-describedby="user_name"/>
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input
+						type="password"
+						class="form-control"
+						id="password"/>
+				</div>
+
+				<div class="form-group form-check">
+						<button id="bt_login" type="button" class="btn btn-primary">login</button>
+			
+						
+				</div>
+			</form>
+		</div>
+	</div>
+		
+		<script src="./main.js/jquery.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('#loginform').submit(function (evt) {
+					evt.preventDefault();
+				});
+				$("#bt_login").click(function () {
+					let username = $('#user_name').val();
+					let password = $('#password').val();
+					$.ajax({
+						crossDomain: true,
+						dataType: 'jsonp',
+						headers: { host: "greenvelvet.alwaysdata.net" },
+						url: "http://greenvelvet.alwaysdata.net/kwick/api/login/" + username + "/" + password,
+					})
+						.done(function (data) {
+							let status = data.result.status;
+							if (status == 'done') {
+								let id = data.result.id;
+								let token = data.result.token;
+								location.replace("/chat.html?id=" + id + "&username=" + username + "&token=" + token);
+							} else {
+								let msg = data.result.message;
+								$("#loginalert span").html(msg);
+								$("#loginalert").show();
+							}
+						});
+				});
+			});
+		</script>
+		 
+	</body>
+</html>
